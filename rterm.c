@@ -375,7 +375,7 @@ int textbox(int wherex, int wherey, int displayLength,
 
   do {
 	 if (locked == 0) break;
-      keypressed = kbhit(3);
+      keypressed = kbhit(1);
     //Cursor Animation
    if (keypressed == 0){
     

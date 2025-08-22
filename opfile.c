@@ -155,6 +155,7 @@ char currentPath[4] = "./\0";
       ch = listBox(listBox1, 2,2, &scrollData, B_CYAN, F_BLACK,B_BLACK, FH_WHITE, new_rows-2, VERTICAL,1,LOCKED);
       //if (_animation() == -1) {ch=K_ESCAPE; break;} 
       if (ch == 0x27) {break;} 
+      if (ch == K_TAB) {break;} 
       if (ch =='h') {break;}
       if (ch =='a') {break;}
       if (ch ==K_SPACE) {break;}

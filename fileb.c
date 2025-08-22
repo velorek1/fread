@@ -82,7 +82,7 @@ long countLinesFile(char *fileName) {
 
 //check whether the file is a text file
 int openandcheckFile(char *fileName) {
-  char    ch=0;
+  unsigned char    ch=0;
   long    counterA = 0;
   FILE *fp;
 
@@ -96,7 +96,7 @@ int openandcheckFile(char *fileName) {
       if (ch == 0x00) {closeFile(fp); fp = NULL; return 1;}
       if(ch < 9) {
 	//discard accents
-	if(ch > -60)
+	if(ch > 196)
 	  counterA++;
       }
       ch = getc(fp);
