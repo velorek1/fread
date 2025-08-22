@@ -1,5 +1,5 @@
-# his
-TUI Text-File Reader **fread**
+# fread
+TUI **Text-File Reader**
 A terminal-based User Interface (TUI) application written in C to view text files on your terminal. 
 
 Features:
