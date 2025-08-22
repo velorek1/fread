@@ -43,6 +43,7 @@ int listFiles(LISTCHOICE ** listBox1, char *directory);
 void addItems(LISTCHOICE **listBox1);
 int openFileDialog(char fileName[MAXFILENAME], char fullPath[MAXFILENAME]);
 int yesnoWindow(char *message, char *windowTitle);
+int displayColorKey(void);
 
 
 #endif

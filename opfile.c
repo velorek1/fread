@@ -155,6 +155,9 @@ char currentPath[4] = "./\0";
       ch = listBox(listBox1, 2,2, &scrollData, B_CYAN, F_BLACK,B_BLACK, FH_WHITE, new_rows-2, VERTICAL,1,LOCKED);
       //if (_animation() == -1) {ch=K_ESCAPE; break;} 
       if (ch == 0x27) {break;} 
+      if (ch =='h') {break;}
+      if (ch =='a') {break;}
+      if (ch ==K_SPACE) {break;}
       if (ch == K_ENTER){
 
         if (scrollData.item[0] == '[') {
@@ -178,7 +181,7 @@ char currentPath[4] = "./\0";
    } while (ch!=K_ESCAPE);   
    // setselectorLimit(15);
    
-
+     
     if (ch!=27){
     	    //we pass the values
             memset(fileName, '\0', strlen(fileName) + 1); // Clear memory for temporary line
@@ -234,5 +237,36 @@ int yesnoWindow(char *message, char *windowTitle) {
   return ok;
 }
 
+int displayColorKey(void)
+{
+	//Color Key
+	char ch = 0;
+        setselectorLimit(4);
+	draw_window((new_columns / 2) - 11, (new_rows / 2) - 6,
+	       (new_columns / 2) + 12, (new_rows) / 2 + 2, B_WHITE, F_BLACK,
+	       B_BLACK, 1, 1, 0);
+	write_str((new_columns / 2) - 10, (new_rows / 2) - 6,
+		  "[+] COLOR KEY", B_BLACK, FH_WHITE);
+	write_str((new_columns / 2) - 10, (new_rows / 2) - 1,
+		  "      DIRECTORIES     ", B_RED, FH_WHITE);
+	write_str((new_columns / 2) - 10, (new_rows / 2) - 2,
+		  "      TEXT FILES      ", B_BLUE, FH_WHITE);
+	write_str((new_columns / 2) - 10, (new_rows / 2) - 3,
+		  "      BINARY FILES    ", B_BLACK, FH_WHITE);
 
+
+
+
+	if (listBox1 != NULL)
+		removeList(&listBox1);
+	
+	listBox1 = addatend(listBox1, newitem("[OK]",-1,-1,-1,-1));
+	if (listBox1 != NULL)
+		ch = listBox(listBox1, (new_columns / 2), (new_rows / 2) + 2,
+			     &scrollData, B_WHITE, F_BLACK, B_RED, FH_WHITE, 1, VERTICAL,1,
+			     LOCKED);
+	if (listBox1 != NULL)
+		removeList(&listBox1);
+	return ch;
+}
 
