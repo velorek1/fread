@@ -26,5 +26,6 @@ Last modified: AUGUST 2025
 /* FUNCTION PROTOTYPES                                                */
 /*====================================================================*/
 
+int readPage(FILE *fp, long pointer, int shiftH);
 int viewFile (char fileName[MAXFILENAME]);
 #endif
