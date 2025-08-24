@@ -27,8 +27,11 @@ LAST MODIFIED : AUGUST 2025
 /*====================================================================*/
 #define TABSIZE 8
 #define MAXCOL 512
-int bColor = B_CYAN;
-int fColor = F_BLACK;
+int bColor = BACKGROUNDCOLOR;
+int fColor = FOREGROUNDCOLOR;
+int titlebCol = TITLEBCOLOR;
+int titlefCol = TITLEFCOLOR;
+
 int highIntensity = 0;
 
 int readPage(FILE *fp, long pointer, int shiftH) {
@@ -138,14 +141,14 @@ int viewFile(char fileName[MAXFILENAME]){
      pointer = 0;
      shiftH = 0;
      printf("%c[2J\r", 0x1b);
-     draw_window(0, 0, new_columns-1, new_rows-1, bColor,fColor, B_WHITE,1,1,0);
+     draw_window(0, 0, new_columns-1, new_rows-1, bColor,fColor, TITLEBCOLOR,1,1,0);
      printf("\n");
      gotoxy(0,0);
      if (openFile(&fp, fileName, "r")) {
        size = getfileSize(fileName);
        lines = countLinesFile(fileName);
        sprintf(fileInfo,"[%s] FileSize: %ld | Lines: %ld",fileName, size,lines+1);
-      write_str(0,0,fileInfo,B_WHITE,FH_BLACK);
+      write_str(1,0,fileInfo,TITLEBCOLOR,TITLEFCOLOR);
        readPage(fp,pointer,shiftH);
        vscrollLimit = lines - (new_rows-2);
        //navigation loop
@@ -153,7 +156,7 @@ int viewFile(char fileName[MAXFILENAME]){
          //file stats progress
          progress = (pointer*100/vscrollLimit);
          sprintf(fileInfo,"Progress [%d]%c  | Col [%d]  ",progress,'%',shiftH);
-         write_str(1,new_rows,fileInfo,B_WHITE,FH_BLACK);
+         write_str(1,new_rows,fileInfo,TITLEBCOLOR,TITLEFCOLOR);
 
  	 //check for screen resize 
          get_terminal_dimensions(&viewrows,&viewcolumns);
@@ -165,7 +168,19 @@ int viewFile(char fileName[MAXFILENAME]){
 		 	ch = readch();
 	 }
 	 else ch=0;
+	 //colors
+	if (ch=='b') {
+		if (bColor < B_WHITE) bColor = bColor+1;
+		else bColor = 39;
+		break;
+		}
 
+	if (ch=='f') {
+		if (fColor < F_WHITE) fColor = fColor+1;
+		else fColor = 29;
+		break;
+		}
+	//escape-related sequences
 	if (ch == K_ESCAPE)	// escape key
 		{
 			strcpy(chartrail, "\0");

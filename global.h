@@ -7,11 +7,33 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
+#include "listc.h"
+#include "rterm.h"
 #define MAXFILENAME 255
 #define MAXLINE 255
 #define HELPLINES 21
-#include "listc.h"
 
+//COLOR PALETTE 1
+#define BACKGROUNDCOLOR B_CYAN
+#define FOREGROUNDCOLOR F_BLACK
+#define TITLEBCOLOR B_WHITE
+#define TITLEFCOLOR FH_BLACK
+#define WINDOWBCOLOR B_WHITE
+#define WINDOWFCOLOR F_BLACK
+#define SELECTORB B_CYAN
+#define SELECTORF FH_WHITE
+
+/*
+//COLOR PALETTE 2
+#define BACKGROUNDCOLOR B_WHITE
+#define FOREGROUNDCOLOR F_BLACK
+#define TITLEBCOLOR B_CYAN
+#define TITLEFCOLOR FH_WHITE
+#define WINDOWBCOLOR B_CYAN
+#define WINDOWFCOLOR FH_WHITE
+#define SELECTORB B_WHITE
+#define SELECTORF F_BLACK
+*/
 #define HELP0 "fread                                              \0"
 #define HELP1 "=======                                            \0"
 #define HELP2 "[fread] is a fast terminal TUI text file reader    \0"
@@ -45,7 +67,6 @@ extern SCROLLDATA scrollData;
 extern int new_rows, new_columns, old_rows, old_columns;	// Terminal dimensions
 extern char fileName[MAXFILENAME]; 
 extern char fullPath[MAXFILENAME]; 
-extern FILE *filePointer;
 int yesnoWindow(char *message, char *windowTitle);
 int displayColorKey(void);
 int displayHelp(void);

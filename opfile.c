@@ -32,6 +32,10 @@
 
 int     window_x1 = 0, window_y1 = 0, window_x2 = 0, window_y2 = 0;
 int ndirs=0, nfiles=0;
+int bcol = BACKGROUNDCOLOR;
+int fcol = FOREGROUNDCOLOR;
+int titleB = TITLEBCOLOR;
+int titleF = TITLEFCOLOR;
 
 /*====================================================================*/
 /* CODE */
@@ -146,13 +150,13 @@ char currentPath[4] = "./\0";
     old_rows = new_rows;
     old_columns = new_columns; 
    do{
-      draw_window(0, 0, new_columns, new_rows, B_CYAN,F_BLACK, B_WHITE,1,0,0);
+      draw_window(0, 0, new_columns, new_rows, bcol,fcol, B_WHITE,1,0,0);
       listFiles(&listBox1,currentPath);
       sprintf(ndirstr, "h: HELP | ESC: EXIT || [%d] Directories [%d] Files", ndirs, nfiles);
       getcwd(path, sizeof(path));	  
-      write_str(1,new_rows,ndirstr,B_WHITE,F_BLACK);
-      write_str(1,0,path,B_WHITE,F_BLACK);
-      ch = listBox(listBox1, 2,2, &scrollData, B_CYAN, F_BLACK,B_BLACK, FH_WHITE, new_rows-2, VERTICAL,1,LOCKED);
+      write_str(1,new_rows,ndirstr,titleB,titleF);
+      write_str(1,0,path,titleB,titleF);
+      ch = listBox(listBox1, 2,2, &scrollData, bcol, fcol,B_BLACK, FH_WHITE, new_rows-2, VERTICAL,1,LOCKED);
       //if (_animation() == -1) {ch=K_ESCAPE; break;} 
       if (ch == 0x27) {break;} 
       if (ch == K_TAB) {break;} 

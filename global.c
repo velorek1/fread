@@ -6,6 +6,7 @@
 
 LISTCHOICE *listBox1 = NULL;
 SCROLLDATA scrollData = {0};
+
 int new_rows = 0, new_columns = 0, old_rows = 0, old_columns = 0;	// Terminal dimensions
 char fileName[MAXFILENAME]={0}; 
 char fullPath[MAXFILENAME]={0}; 
@@ -34,12 +35,12 @@ int yesnoWindow(char *message, char *windowTitle) {
   window_y2 = (new_rows / 2) + 4;
   window_x1 = (new_columns / 2) - 16;
   window_x2 = (new_columns / 2) + 16;
-  draw_window(window_x1, window_y1, window_x2, window_y2, B_WHITE, F_BLACK, F_BLACK,1,1,0);
+  draw_window(window_x1, window_y1, window_x2, window_y2, WINDOWBCOLOR, WINDOWFCOLOR, WINDOWFCOLOR,1,1,0);
   write_str((window_x2-window_x1) /2 + window_x1 - (strlen(windowTitle)/2) , window_y1, windowTitle, B_BLACK, F_WHITE);
  for(i = 0; i < strlen(message); i++) {
     tempChar = message[i];
     if (tempChar != '|'){
-      write_ch(window_x1 + 1 + ix, window_y1 + 1 + j, tempChar, B_WHITE,F_BLACK);
+      write_ch(window_x1 + 1 + ix, window_y1 + 1 + j, tempChar, WINDOWBCOLOR,WINDOWFCOLOR);
     ix++;
     }else {
 	    j++;
@@ -53,7 +54,7 @@ int yesnoWindow(char *message, char *windowTitle) {
   listBox1 = addatend(listBox1, newitem("[ EXIT ]",window_x1+23,window_y2,-1,-1));
 
   setselectorLimit(8);
-  ch = listBox(listBox1, window_x1+2,window_y2, &scrollData, B_WHITE, F_BLACK,B_RED, FH_WHITE, 3, HORIZONTAL,1,LOCKED);
+  ch = listBox(listBox1, window_x1+2,window_y2, &scrollData, WINDOWBCOLOR, WINDOWFCOLOR,B_RED, FH_WHITE, 3, HORIZONTAL,1,LOCKED);
   ok = scrollData.itemIndex;
   if (listBox1 != NULL) removeList(&listBox1);
   ch++;
@@ -67,8 +68,8 @@ int displayColorKey(void)
 	char ch = 0;
         setselectorLimit(4);
 	draw_window((new_columns / 2) - 11, (new_rows / 2) - 6,
-	       (new_columns / 2) + 12, (new_rows) / 2 + 2, B_WHITE, F_BLACK,
-	       B_BLACK, 1, 1, 1);
+	       (new_columns / 2) + 12, (new_rows) / 2 + 2, WINDOWBCOLOR, WINDOWFCOLOR,
+	       WINDOWFCOLOR, 1, 1, 1);
 	write_str((new_columns / 2) - 10, (new_rows / 2) - 6,
 		  "[+] COLOR KEY", B_BLACK, FH_WHITE);
 	write_str((new_columns / 2) - 10, (new_rows / 2) - 1,
@@ -87,7 +88,7 @@ int displayColorKey(void)
 	listBox1 = addatend(listBox1, newitem("[OK]",-1,-1,-1,-1));
 	if (listBox1 != NULL)
 		ch = listBox(listBox1, (new_columns / 2), (new_rows / 2) + 2,
-			     &scrollData, B_WHITE, F_BLACK, B_RED, FH_WHITE, 1, VERTICAL,1,
+			     &scrollData, WINDOWBCOLOR, WINDOWFCOLOR, B_RED, FH_WHITE, 1, VERTICAL,1,
 			     LOCKED);
 	if (listBox1 != NULL)
 		removeList(&listBox1);
@@ -103,8 +104,8 @@ int displayHelp(void)
 
 	setselectorLimit((26 * 2) - 1);	//No. of chars per item display
 	draw_window((new_columns / 2) - 26, (new_rows / 2) - 8,
-		    (new_columns / 2) + 26, (new_rows) / 2 + 8, B_WHITE, F_BLACK,
-		    B_BLACK, 1, 1, 1);
+		    (new_columns / 2) + 26, (new_rows) / 2 + 8, WINDOWBCOLOR, WINDOWFCOLOR,
+		    WINDOWFCOLOR, 1, 1, 1);
 	write_str((new_columns / 2) - 1, (new_rows / 2) + 7, "[OK]",
 		  B_RED, FH_WHITE);
 	write_str((new_columns / 2) - 25, (new_rows / 2) - 8,
@@ -117,8 +118,8 @@ int displayHelp(void)
 	}
 	if (listBox1 != NULL)
 		ch = listBox(listBox1, (new_columns / 2) - 24,
-			     (new_rows / 2) - 6, &scrollData, B_WHITE, F_BLACK,
-			     B_CYAN, FH_WHITE, 14, VERTICAL,1,LOCKED);
+			     (new_rows / 2) - 6, &scrollData, WINDOWBCOLOR, WINDOWFCOLOR,
+			     SELECTORB, SELECTORF, 14, VERTICAL,1,LOCKED);
 	if (listBox1 != NULL)
 		removeList(&listBox1);
 	scrollData.lastch =0;
