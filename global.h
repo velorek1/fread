@@ -27,7 +27,7 @@
 #define HELP12 "Usage:                                            \0"
 #define HELP13 "[1] ./fread                                       \0"
 #define HELP14 "[2] ./fread FILENAME                              \0"
-#define HELP15 "[1] Opens file dialog | View text file.            \0"
+#define HELP15 "F2/F3/F4 Change back- and fore-ground colors.      \0"
 #define HELP16 "___________________________________________________\0"
 #define HELP17 "This program was coded in C & Vim in August 2025.  \0"
 #define HELP18 "Some of the techniques used can be found in my     \0"
