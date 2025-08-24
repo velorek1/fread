@@ -16,6 +16,7 @@ LAST MODIFIED : AUGUST 2025
 #include <stdio.h>
 #include <wchar.h>
 #include <locale.h>
+#include <string.h>
 #include "rterm.h"
 #include "viewer.h"
 #include "global.h"
@@ -23,11 +24,12 @@ LAST MODIFIED : AUGUST 2025
 /*====================================================================*/
 /* FUNCTIONS - CODE                                                   */
 /*====================================================================*/
+#define TABSIZE 8
 
 int readPage(FILE *fp, long pointer, int shiftH) {
     long lines = 0;
-    int k=0;
-    int i = 1, j= 1;
+    int k = 0;
+    int i = 1, j = 1;
     wint_t ch = 0;
 
     if (fp == NULL) return -1;
@@ -35,59 +37,74 @@ int readPage(FILE *fp, long pointer, int shiftH) {
 
     // Skip lines for vertical scroll
     while (lines < pointer && ch != WEOF) {
-	ch = fgetwc(fp);
+        ch = fgetwc(fp);
         if (ch == 10) lines++;
     }
 
-    // Write taking into account vertical pointer(pointer) and horixontal shift (shiftH)
+    // Write taking into account vertical pointer(pointer) and horizontal shift (shiftH)
     int col = 0;       // absolute column in file
     int line_len = 0;  // how many chars we actually drew in this row
 
-    while (ch  != WEOF) {
-	    ch=fgetwc(fp);
-        if (ch == 10) {
-            // pad the rest of the line with spaces
+    while (ch != WEOF) {
+        ch = fgetwc(fp);
+
+        if (ch == 10) {   // newline
+            // clear the rest of the line with spaces
             if (line_len < new_columns - 2) {
-               for (k=line_len+1;k<new_columns-2;k++){
-		       if (k<1) k = 1;
-		       if( j<new_rows-1)write_ch(k,j,' ',B_RED,F_WHITE);
-	       }
-	       if (j<new_rows-1)printf("\n");
+                for (k = line_len + 1; k < new_columns - 2; k++) {
+                    if (j < new_rows - 1) write_ch(k, j, ' ', B_CYAN, F_WHITE);
+                }
+                if (j < new_rows - 1) printf("\n");
             }
             j++;
-	    i = 1;
+            i = 1;
             col = 0;
             line_len = 0;
 
-        } else {
+        } else if (ch == 9) {   // TAB handling
+            int next_col = (col / TABSIZE + 1) * TABSIZE;
+            while (col < next_col) {
+                if (col >= shiftH && i < new_columns - 2) {
+                    if (j < new_rows - 1)
+                        write_ch(i, j, ' ', B_CYAN, F_BLACK);
+                    i++;
+                    line_len++;
+                }
+                col++;
+            }
+
+        } else {   // normal character
             // skip until horizontal scroll offset
             if (col >= shiftH) {
-                if (i < new_columns) {
-                    if (ch!=10 && ch!=0 && (j<new_rows-1)) write_ch(i, j, ch, B_CYAN, F_BLACK);
+                if (i < new_columns - 2) {
+                    if (ch > 20 && (j < new_rows - 1)) {
+                        write_ch(i, j, ch, B_CYAN, F_BLACK);
+                    }
                     i++;
                     line_len++;
                 }
             }
             col++;
         }
-        //last line
-        if (j == (new_rows - 1)){
-	     ch=fgetwc(fp);
-             if (ch!=10 && ch!=0 && j == new_rows-2) write_ch(i, j, ch, B_CYAN, F_BLACK);
-	    break;
-	}
-    }
-/*
-    // if the file ended before screen was full, clear last line
-    if (line_len < new_columns - 2) {
-         for (k=line_len+1;k<new_columns-2;k++){
-		       if (k<1) k = 1;
-		       write_ch(k,j,' ',B_RED,F_WHITE);
-	       }
-	       printf("\n");
 
+        // last line
+        if (j == (new_rows - 1)) {
+            ch = fgetwc(fp);
+            if (ch == 9) {   // TAB on last line
+                int next_col = (col / TABSIZE + 1) * TABSIZE;
+                while (col < next_col && j == new_rows - 2) {
+                    if (col >= shiftH && i < new_columns - 2) {
+                        write_ch(i, j, ' ', B_CYAN, F_BLACK);
+                        i++;
+                    }
+                    col++;
+                }
+            } else if (ch > 20 && j == new_rows - 2) {
+                write_ch(i, j, ch, B_CYAN, F_BLACK);
+            }
+            break;
+        }
     }
-*/
     return 0;
 }
 
@@ -97,46 +114,78 @@ int viewFile(char fileName[MAXFILENAME]){
    long size=0;
    long pointer=0;
    int shiftH = 0;
+   int exitSignal = 0;
    char ch = 0;
    char fileInfo[1024];
+   char fileProgress[1024];
    long vscrollLimit = 0;
-   printf("%c[2J\r", 0x1b);
-   draw_window(0, 0, new_columns-1, new_rows-1, B_CYAN,F_BLACK, B_WHITE,1,1,0);
-   printf("\n");
-   gotoxy(0,0);
-  if (openFile(&fp, fileName, "r")) {
+   int viewrows=0;
+   int viewcolumns=0;
+   int progress=0;
+   //Resize loop
+   do {
+     strcpy(fileInfo,"\0");
+     strcpy(fileProgress,"\0");
+     ch = 0;
+     vscrollLimit = 0;
+     exitSignal = 0;
+     pointer = 0;
+     shiftH = 0;
+     printf("%c[2J\r", 0x1b);
+     draw_window(0, 0, new_columns-1, new_rows-1, B_CYAN,F_BLACK, B_WHITE,1,1,0);
+     printf("\n");
+     gotoxy(0,0);
+     if (openFile(&fp, fileName, "r")) {
        size = getfileSize(fileName);
        lines = countLinesFile(fileName);
        sprintf(fileInfo,"[%s] FileSize: %ld | Lines: %ld",fullPath, size,lines);
-       write_str(0,0,fileInfo,B_WHITE,FH_BLACK);
+      write_str(0,0,fileInfo,B_WHITE,FH_BLACK);
        readPage(fp,pointer,shiftH);
        vscrollLimit = lines - (new_rows-2);
-   do {
+       //navigation loop
+       do {
 	  
-       ch = readch();
-       if (ch == 's') {
+         if (kbhit(1)) ch = readch();
+	 else ch=0;
+       progress = (pointer*100/vscrollLimit);
+       sprintf(fileInfo,"Progress [%d]%c  | Col [%d]  ",progress,'%',shiftH);
+       write_str(1,new_rows,fileInfo,B_WHITE,FH_BLACK);
+
+
+        //check for screen resize 
+         get_terminal_dimensions(&viewrows,&viewcolumns);
+         if (viewrows != new_rows || viewcolumns != new_columns)
+	         break;
+
+         if (ch == 's') {
              if (pointer<vscrollLimit) pointer++;
 	     readPage(fp,pointer,shiftH);
-       }
-       if (ch == 'w') {
+         }
+         if (ch == 'w') {
              if (pointer>0) pointer--;
 	     readPage(fp,pointer,shiftH);
-       }
-        if (ch =='d'){
-	  if(shiftH<512) shiftH++;
-	     readPage(fp,pointer,shiftH);
+         }
+         if (ch =='d'){
+	    if(shiftH<512) shiftH++;
+	      readPage(fp,pointer,shiftH);
 
-	}
-        if (ch =='a'){
-	  if (shiftH>0) shiftH--;
-	     readPage(fp,pointer,shiftH);
-	}
+	  }
+         if (ch =='a'){
+	    if (shiftH>0) shiftH--;
+	      readPage(fp,pointer,shiftH);
+	   }
 
-    } while (ch!=27);
-  }  
-  closeFile(fp);
-  fp = NULL;
- resetAnsi(0); 
+	  if (ch == 27) exitSignal = 1;
+
+       } while (exitSignal !=1);
+     } 
+   new_columns = viewcolumns;
+   new_rows = viewrows;
+   closeFile(fp);
+   fp = NULL; 
+  } while (exitSignal != 1);  
+   
+  resetAnsi(0); 
   return 0;
 }
 

@@ -1,0 +1,9 @@
+This is an example of TAB
+	This is an	example of		TAB
+
+This		is		an 	example		of tab
+
+
+	0		1		2		2
+	a		b		c		d
+	a	c	d	e	f	g	h
