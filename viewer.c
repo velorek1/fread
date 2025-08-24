@@ -21,10 +21,12 @@ LAST MODIFIED : AUGUST 2025
 #include "viewer.h"
 #include "global.h"
 #include "fileb.h"
+#include "keyb.h"
 /*====================================================================*/
 /* FUNCTIONS - CODE                                                   */
 /*====================================================================*/
 #define TABSIZE 8
+#define MAXCOL 512
 
 int readPage(FILE *fp, long pointer, int shiftH) {
     long lines = 0;
@@ -119,6 +121,7 @@ int viewFile(char fileName[MAXFILENAME]){
    char fileInfo[1024];
    char fileProgress[1024];
    long vscrollLimit = 0;
+   char chartrail[5];
    int viewrows=0;
    int viewcolumns=0;
    int progress=0;
@@ -138,44 +141,73 @@ int viewFile(char fileName[MAXFILENAME]){
      if (openFile(&fp, fileName, "r")) {
        size = getfileSize(fileName);
        lines = countLinesFile(fileName);
-       sprintf(fileInfo,"[%s] FileSize: %ld | Lines: %ld",fullPath, size,lines);
+       sprintf(fileInfo,"[%s] FileSize: %ld | Lines: %ld",fileName, size,lines);
       write_str(0,0,fileInfo,B_WHITE,FH_BLACK);
        readPage(fp,pointer,shiftH);
        vscrollLimit = lines - (new_rows-2);
        //navigation loop
        do {
-	  
-         if (kbhit(1)) ch = readch();
-	 else ch=0;
-       progress = (pointer*100/vscrollLimit);
-       sprintf(fileInfo,"Progress [%d]%c  | Col [%d]  ",progress,'%',shiftH);
-       write_str(1,new_rows,fileInfo,B_WHITE,FH_BLACK);
+         //file stats progress
+         progress = (pointer*100/vscrollLimit);
+         sprintf(fileInfo,"Progress [%d]%c  | Col [%d]  ",progress,'%',shiftH);
+         write_str(1,new_rows,fileInfo,B_WHITE,FH_BLACK);
 
-
-        //check for screen resize 
+ 	 //check for screen resize 
          get_terminal_dimensions(&viewrows,&viewcolumns);
          if (viewrows != new_rows || viewcolumns != new_columns)
 	         break;
 
-         if (ch == 's') {
-             if (pointer<vscrollLimit) pointer++;
-	     readPage(fp,pointer,shiftH);
-         }
-         if (ch == 'w') {
-             if (pointer>0) pointer--;
-	     readPage(fp,pointer,shiftH);
-         }
-         if (ch =='d'){
-	    if(shiftH<512) shiftH++;
-	      readPage(fp,pointer,shiftH);
+         //Process Special Arrow Keys
+      	 if (kbhit(1)) {
+		 	ch = readch();
+	 }
+	 else ch=0;
 
-	  }
-         if (ch =='a'){
-	    if (shiftH>0) shiftH--;
-	      readPage(fp,pointer,shiftH);
-	   }
+	if (ch == K_ESCAPE)	// escape key
+		{
+			strcpy(chartrail, "\0");
+			read_keytrail(chartrail);
 
-	  if (ch == 27) exitSignal = 1;
+			if (chartrail[0] == K_ESCAPE && chartrail[1] == 0) {
+				//escape
+				exitSignal = 1;
+				break;
+			}
+			if (strcmp(chartrail, K_UP_TRAIL) == 0) {
+	            	  if (pointer>0) pointer--;
+	                  readPage(fp,pointer,shiftH);
+			}
+       
+			if (strcmp(chartrail, K_DOWN_TRAIL) == 0) {
+                          if (pointer<vscrollLimit) pointer++;
+	                  readPage(fp,pointer,shiftH);
+ 
+			}
+			if (strcmp(chartrail, K_RIGHT_TRAIL) == 0) {
+		          if(shiftH<MAXCOL) shiftH++;
+	                  readPage(fp,pointer,shiftH);
+			}
+
+			if (strcmp(chartrail, K_LEFT_TRAIL) == 0) {
+		           if (shiftH>0) shiftH--;
+	                   readPage(fp,pointer,shiftH);
+	                }
+			if (strcmp(chartrail, K_PAGEUP_TRAIL) == 0) {
+                          if (pointer >= new_rows - 2)
+                              pointer = pointer - (new_rows - 2);
+                          else
+                             pointer = 0;  // stop at the top	                  
+		         readPage(fp,pointer,shiftH);
+			}
+       
+			if (strcmp(chartrail, K_PAGEDOWN_TRAIL) == 0) {
+                          if (pointer + (new_rows - 2) <= vscrollLimit)
+                            pointer =  pointer + (new_rows - 2);
+                          else
+                            pointer = vscrollLimit;  // stop at the limit of our scroll
+                         readPage(fp, pointer, shiftH);	      
+			}
+	         }	
 
        } while (exitSignal !=1);
      } 

@@ -27,6 +27,7 @@ LAST MODIFIED : 14/04/2019 - Rename headers
 
 int file_exists(char *fileName) {
   int     ok=0;
+  if (fileName == NULL) return -1;
   if(access(fileName, F_OK) != -1) {
     ok = 1;			//File exists
   } else {

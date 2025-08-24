@@ -17,5 +17,8 @@ extern int new_rows, new_columns, old_rows, old_columns;	// Terminal dimensions
 extern char fileName[MAXFILENAME]; 
 extern char fullPath[MAXFILENAME]; 
 extern FILE *filePointer;
+int yesnoWindow(char *message, char *windowTitle);
+int displayColorKey(void);
+
 
 #endif

@@ -42,8 +42,5 @@ Last modified: 23/04/2024 Vastly simplified and integraed with lynx
 int listFiles(LISTCHOICE ** listBox1, char *directory);
 void addItems(LISTCHOICE **listBox1);
 int openFileDialog(char fileName[MAXFILENAME], char fullPath[MAXFILENAME]);
-int yesnoWindow(char *message, char *windowTitle);
-int displayColorKey(void);
-
 
 #endif
