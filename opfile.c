@@ -148,7 +148,7 @@ char currentPath[4] = "./\0";
    do{
       draw_window(0, 0, new_columns, new_rows, B_CYAN,F_BLACK, B_WHITE,1,0,0);
       listFiles(&listBox1,currentPath);
-      sprintf(ndirstr, "[%d] Directories [%d] Files", ndirs, nfiles);
+      sprintf(ndirstr, "h: HELP | ESC: EXIT || [%d] Directories [%d] Files", ndirs, nfiles);
       getcwd(path, sizeof(path));	  
       write_str(1,new_rows,ndirstr,B_WHITE,F_BLACK);
       write_str(1,0,path,B_WHITE,F_BLACK);

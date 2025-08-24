@@ -1,4 +1,4 @@
-//File reader [fread]
+//TUI Text-File reader [fread]
 //Coded by v3l0r3k
 //Date: August 2025
 
@@ -16,7 +16,6 @@
 int main(int argc, char *argv[]){
 
    int exitsignal = 0;
-   int bytes = 0;
    int ok =0;
    char csearch[MAXFILENAME];
    char ch = 0;
@@ -33,7 +32,7 @@ int main(int argc, char *argv[]){
    if(file_exists(argv[1]) == 1 && argc>0) {   
       viewFile(argv[1]);
    }   else{
-  //No arguments were given open file dialog
+  //No arguments were given open file dialog loop
     do{
      get_terminal_dimensions (&new_rows,&new_columns);
 	 if (openFileDialog(fileName,fullPath) == 0){ 
@@ -47,27 +46,23 @@ int main(int argc, char *argv[]){
 		 }
 	   }
 	 }
-	 //All of these can be found in opfile.c
+	 //Miscellaneous routines are found in global.c
 	 if (scrollData.lastch == K_SPACE) {ch=displayColorKey(); if (ch == K_ESCAPE) {scrollData.lastch = 0;}}
 	 if (scrollData.lastch == K_TAB) {
 		    strcpy(csearch,"\0");
-	            textbox(1, new_rows-1, 25,"File:", csearch, B_BLACK, F_WHITE, F_WHITE, 1);
+	            textbox(1, new_rows-1, 45,"File:", csearch, B_BLACK, F_WHITE, F_WHITE, 1);
 		    if (strlen(csearch)>1 && file_exists(csearch)) {
 			strcpy(fileName,csearch);
 			viewFile(fileName);
 		    }
 	 }
-	 //if (scrollData.lastch == 'x') displayHelp();
-	 //if (scrollData.lastch == 'x') displayAbout();
+	 if (scrollData.lastch == 'h') displayHelp();
+	 if (scrollData.lastch == 'a') displayAbout();
   	 if (scrollData.lastch == K_ESCAPE && scrollData.screenChanged == 0) exitsignal = 1;
       } while (exitsignal != 1);
     }
    //credits
    showcursor();   
    close_term();
-   printf("%s\n", fileName);
-   printf("%s\n", fullPath);
-   printf("%d\n",scrollData.screenChanged);
-   printf("%d\n",bytes);
    return 0;
 }
