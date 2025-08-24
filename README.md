@@ -17,7 +17,7 @@ TO INSTALL:
 License
 This project is licensed under the MIT License.
 
-- Watch video here:
+- Watch video here:<br>
 [![Watch the video](https://img.youtube.com/vi/NA09eHyBfaM/0.jpg)](https://youtu.be/NA09eHyBfaM)
 
 ![Alt text](fread2.png?raw=true "Demo")
