@@ -180,6 +180,21 @@ int viewFile(char fileName[MAXFILENAME]){
 		else fColor = 29;
 		break;
 		}
+	if (ch=='i' ) {
+		if (highIntensity == 60) {
+			bColor = bColor - highIntensity;
+			fColor = fColor - highIntensity;
+			highIntensity = 0;
+		}
+		else{
+			highIntensity = 60;
+			bColor = bColor + highIntensity;
+			fColor = fColor + highIntensity;
+					
+			}
+			break;
+	 }
+
 	//escape-related sequences
 	if (ch == K_ESCAPE)	// escape key
 		{
