@@ -27,8 +27,8 @@ LAST MODIFIED : AUGUST 2025
 /*====================================================================*/
 #define TABSIZE 8
 #define MAXCOL 512
-int bColor = BACKGROUNDCOLOR;
-int fColor = FOREGROUNDCOLOR;
+int bColor = B_BLUE;
+int fColor = FH_WHITE;
 int titlebCol = TITLEBCOLOR;
 int titlefCol = TITLEFCOLOR;
 
@@ -37,7 +37,7 @@ int highIntensity = 0;
 int readPage(FILE *fp, long pointer, int shiftH) {
     long lines = 0;
     int k = 0;
-    int i = 1, j = 1;
+    int i = 1, j = 2;
     wint_t ch = 0;
 
     if (fp == NULL) return -1;
@@ -131,6 +131,7 @@ int viewFile(char fileName[MAXFILENAME]){
    int viewrows=0;
    int viewcolumns=0;
    int progress=0;
+   int i =0;
    //Resize loop
    do {
      strcpy(fileInfo,"\0");
@@ -141,14 +142,17 @@ int viewFile(char fileName[MAXFILENAME]){
      pointer = 0;
      shiftH = 0;
      printf("%c[2J\r", 0x1b);
-     draw_window(0, 0, new_columns-1, new_rows-1, bColor,fColor, TITLEBCOLOR,1,1,0);
+     draw_window(0, 1, new_columns-1, new_rows-1, bColor,fColor, TITLEBCOLOR,1,0,0);
+     for (i=0;i<new_columns;i++)
+	     write_ch(i,0,' ',B_WHITE,TITLEFCOLOR);
      printf("\n");
      gotoxy(0,0);
      if (openFile(&fp, fileName, "r")) {
        size = getfileSize(fileName);
        lines = countLinesFile(fileName);
-       sprintf(fileInfo,"[%s] FileSize: %ld | Lines: %ld",fileName, size,lines+1);
-      write_str(1,0,fileInfo,TITLEBCOLOR,TITLEFCOLOR);
+       sprintf(fileInfo,"FileSize: %ld | Lines: %ld",size,lines+1);
+       write_str(1,0,fileInfo,STATUSBARB,STATUSBARF);
+       write_str(1,1,fileName,TITLEBCOLOR,TITLEFCOLOR);
        readPage(fp,pointer,shiftH);
        vscrollLimit = lines - (new_rows-2);
        //navigation loop

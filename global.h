@@ -13,6 +13,7 @@
 #define MAXLINE 255
 #define HELPLINES 21
 
+/*
 //COLOR PALETTE 1
 #define BACKGROUNDCOLOR B_CYAN
 #define FOREGROUNDCOLOR F_BLACK
@@ -22,8 +23,8 @@
 #define WINDOWFCOLOR F_BLACK
 #define SELECTORB B_CYAN
 #define SELECTORF FH_WHITE
+*/
 
-/*
 //COLOR PALETTE 2
 #define BACKGROUNDCOLOR B_WHITE
 #define FOREGROUNDCOLOR F_BLACK
@@ -33,7 +34,10 @@
 #define WINDOWFCOLOR FH_WHITE
 #define SELECTORB B_WHITE
 #define SELECTORF F_BLACK
-*/
+#define STATUSBARB B_WHITE
+#define STATUSBARF F_BLACK
+
+
 #define HELP0 "fread                                              \0"
 #define HELP1 "=======                                            \0"
 #define HELP2 "[fread] is a fast terminal TUI text file reader    \0"
