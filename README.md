@@ -18,7 +18,7 @@ License
 This project is licensed under the MIT License.
 
 - Watch video here:<br>
-[![Watch the video](https://img.youtube.com/vi/NA09eHyBfaM/0.jpg)](https://youtu.be/NA09eHyBfaM)
+[![Watch the video](https://img.youtube.com/vi/NA09eHyBfaM/0.jpg)](https://youtu.be/-VlH742uRys)
 
 ![Alt text](fread.png?raw=true "Demo")
 
