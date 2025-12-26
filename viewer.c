@@ -55,7 +55,8 @@ int readPage(FILE *fp, long pointer, int shiftH) {
 
     while (ch != WEOF) {
         ch = fgetwc(fp);
-
+        
+	if (ch == 13 ) ch = ' '; //windows CRLF
         if (ch == 10) {   // newline
             // clear the rest of the line with spaces
             if (line_len < new_columns - 2) {
