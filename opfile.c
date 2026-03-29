@@ -143,20 +143,25 @@ char path[MAXFILENAME];
 char bit[MAXFILENAME];
 char ndirstr[255];
 size_t i=0;
+int j=0, k=0;
 int retvalue=0;
 char currentPath[4] = "./\0";
     retvalue =0;
-    setselectorLimit(new_columns-2);
+    setselectorLimit(new_columns-7);
     old_rows = new_rows;
     old_columns = new_columns; 
    do{
-      draw_window(0, 0, new_columns, new_rows, bcol,fcol, B_WHITE,1,0,0);
+    //unicode bluw-white background, dos-ansi style
+    for (k=0; k<new_columns;k++)
+	 for(j=0;j<new_rows;j++)
+       write_ch(k,j,0x2591,B_WHITE,F_BLUE);
+      draw_window(2, 2, new_columns-4, new_rows-4, bcol,fcol, bcol,1,0,1);
       listFiles(&listBox1,currentPath);
       sprintf(ndirstr, "h: HELP | ESC: EXIT || [%d] Directories [%d] Files", ndirs, nfiles);
       getcwd(path, sizeof(path));	  
-      write_str(1,new_rows,ndirstr,titleB,titleF);
-      write_str(1,0,path,titleB,titleF);
-      ch = listBox(listBox1, 2,2, &scrollData, bcol, fcol,B_BLACK, FH_WHITE, new_rows-2, VERTICAL,1,LOCKED);
+      write_str(0,new_rows,ndirstr,titleB,titleF);
+      write_str(0,0,path,titleB,titleF);
+      ch = listBox(listBox1, 4,4, &scrollData, bcol, fcol,B_BLACK, FH_WHITE, new_rows-7, VERTICAL,1,LOCKED);
       //if (_animation() == -1) {ch=K_ESCAPE; break;} 
       if (ch == 0x27) {break;} 
       if (ch == K_TAB) {break;} 

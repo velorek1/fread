@@ -131,7 +131,7 @@ void aboutmsg(){
 	int i = 0;
 	draw_window((new_columns / 2) - 28, (new_rows / 2) - 6,
 	       (new_columns / 2) + 27, (new_rows) / 2 + 5, B_BLACK, F_WHITE,
-	       B_WHITE, 1, 0, 1);
+	       B_WHITE, 1, 0, 0);
 	for (i = 0; i < 4; i++) {
 		write_str((new_columns / 2) - 15,
 			  (new_rows / 2) - 5 + i, aboutMSG[i], B_BLACK,
@@ -155,7 +155,7 @@ int displayAbout(void)
         srand(time(NULL));  
 	draw_window((new_columns / 2) - 28, (new_rows / 2) - 6,
 	       (new_columns / 2) + 27, (new_rows) / 2 + 5, B_BLACK, F_WHITE,
-	       B_WHITE, 1, 0, 1);
+	       B_WHITE, 1, 0, 0);
 	
 	do {
           if (kbhit(7))

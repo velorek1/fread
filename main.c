@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
 	 if (scrollData.lastch == K_SPACE) {ch=displayColorKey(); if (ch == K_ESCAPE) {scrollData.lastch = 0;}}
 	 if (scrollData.lastch == K_TAB) {
 		    strcpy(csearch,"\0");
-	            textbox(1, new_rows-1, 45,"File:", csearch, B_BLACK, F_WHITE, F_WHITE, 1);
+	            textbox(0, new_rows-1, 45,"File:", csearch, B_BLACK, F_WHITE, F_WHITE, 1);
 		    if (strlen(csearch)>1 && file_exists(csearch)) {
 			strcpy(fileName,csearch);
 			viewFile(fileName);
